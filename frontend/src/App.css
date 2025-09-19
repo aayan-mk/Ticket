@@ -1,0 +1,88 @@
+/* Make the html, body, and root take full height */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #6B21A8, #DB2777, #FACC15); /* purple → pink → yellow */
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: hidden;
+}
+
+/* Gradient animation for lively background */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#root {
+  width: 100%;
+  max-width: 1280px;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Card style for neon effect */
+.card {
+  padding: 2em;
+  border-radius: 2rem;
+  background: linear-gradient(135deg, #FF0080, #7928CA);
+  box-shadow: 0 0 2rem #FF0080, 0 0 3rem #7928CA inset;
+  color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 0 3rem #FF0080, 0 0 4rem #7928CA inset;
+}
+
+/* Logo animations */
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+/* Buttons with neon hover effect */
+.button-neon {
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(45deg, #00f5a0, #00d4ff);
+  box-shadow: 0 0 1rem #00f5a0, 0 0 2rem #00d4ff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.button-neon:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 2rem #00f5a0, 0 0 3rem #00d4ff, 0 0 5rem #00f5a0 inset;
+}
+
+/* General text */
+.read-the-docs {
+  color: #fff;
+}
