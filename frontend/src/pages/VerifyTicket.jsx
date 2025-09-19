@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { QrReader } from "react-qr-reader";
+import QrScanner from "react-qr-scanner";
 import axios from "axios";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
@@ -13,11 +13,12 @@ const VerifyTicket = () => {
   const [message, setMessage] = useState("");
 
   const handleScan = async (data) => {
-    if (data) {
-      setResult(data);
+    if (data && data.text) {
+      const qrCode = data.text;
+      setResult(qrCode);
       try {
         const res = await axios.post("http://localhost:5000/api/ticket/verify", {
-          qrCode: data,
+          qrCode,
         });
         setTicketDetails(res.data.ticket || null);
         setMessage(res.data.message);
@@ -140,17 +141,16 @@ const VerifyTicket = () => {
             marginBottom: "30px",
           }}
         >
-          <QrReader
-            constraints={{ facingMode: "environment" }}
-            onResult={(res, err) => {
-              if (!!res) handleScan(res?.text);
-              if (!!err) handleError(err);
-            }}
+          <QrScanner
+            delay={300}
+            onError={handleError}
+            onScan={handleScan}
             style={{
               width: "100%",
               borderRadius: "20px",
               border: "4px solid rgba(255,255,255,0.5)",
             }}
+            constraints={{ facingMode: "environment" }}
           />
           <button
             onClick={() => setScanning(false)}
