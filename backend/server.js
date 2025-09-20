@@ -1,14 +1,12 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const https = require("https");
-const fs = require("fs");
 const cors = require("cors");
 
 // Load env vars
 dotenv.config();
 
-// Connect DB
+// Connect to MongoDB
 connectDB();
 
 const app = express();
@@ -21,15 +19,10 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/events", require("./routes/eventRoutes"));
 app.use("/api/payments", require("./routes/paymentRoutes"));
+app.use(require("./routes/webhooksRoutes")); // Razorpay webhook
 
-// SSL cert and key
-const sslOptions = {
-  key: fs.readFileSync("localhost-key.pem"),
-  cert: fs.readFileSync("localhost.pem"),
-};
-
-// Start HTTPS server
+// Start HTTP server (hosting provider will handle HTTPS)
 const PORT = process.env.PORT || 5000;
-https.createServer(sslOptions, app).listen(PORT, () => {
-  console.log(`✅ Secure server running on https://localhost:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

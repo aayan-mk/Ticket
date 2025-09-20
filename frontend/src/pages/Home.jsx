@@ -11,9 +11,9 @@ const Home = () => {
     {
       _id: "1",
       name: "Garba Night",
-      date: "2025-10-05",
-      location: "Community Hall, Mumbai",
-      price: 500,
+      date: "26th September 2025",
+      location: "Shree L. R. Tiwari Educational Campus, Mira Road",
+      price: "150 + GST",
       description:
         "A night full of traditional Garba dance and music. Join the fun!",
       image: GarbaImage,
