@@ -44,6 +44,10 @@ const Payment = () => {
     }, 1000);
   };
 
+  const handleBackHome = () => {
+    navigate("/user-home");
+  };
+
   return (
     <div
       style={{
@@ -91,7 +95,7 @@ const Payment = () => {
               📍 {event.location}
             </p>
             <p style={{ fontSize: "0.9rem", marginBottom: "30px" }}>
-              💰 ₹{event.price} + GST
+              💰 ₹{event.price} + Additional Charges
             </p>
           </>
         )}
@@ -113,11 +117,31 @@ const Payment = () => {
             cursor: "pointer",
             boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
             transition: "all 0.3s ease",
+            marginBottom: "15px",
           }}
           onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
           onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
         >
           💰 Pay Now
+        </button>
+
+        {/* ✅ Back button */}
+        <button
+          onClick={handleBackHome}
+          style={{
+            padding: "12px 25px",
+            background: "#222",
+            border: "none",
+            borderRadius: "10px",
+            color: "#fff",
+            fontSize: "1rem",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#444")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "#222")}
+        >
+          🏠 Back to Home
         </button>
       </div>
 

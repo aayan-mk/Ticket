@@ -109,7 +109,7 @@ const UserHome = () => {
         <p style={{ fontSize: "13px", margin: "10px 0", color: "#333" }}>
           📅 {garbaNightEvent.date} <br />
           📍 {garbaNightEvent.location} <br />
-          💰 ₹{garbaNightEvent.price} + GST
+          💰 ₹{garbaNightEvent.price} + Additional Charges,
         </p>
         <button
           onClick={() => handleBookTicket(garbaNightEvent)}

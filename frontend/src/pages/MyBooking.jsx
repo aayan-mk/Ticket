@@ -25,138 +25,189 @@ const MyBooking = () => {
         minHeight: "100vh",
         padding: "20px",
         fontFamily: "Arial, sans-serif",
-        background: "linear-gradient(135deg, #8e2de2, #4a00e0, #ff416c, #ff4b2b)",
+        background:
+          "linear-gradient(135deg, #8e2de2, #4a00e0, #ff416c, #ff4b2b)",
         color: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
       }}
     >
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginBottom: "30px",
-        }}
-      >
-        <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "15px" }}>
-          📋 My Bookings
-        </h1>
-        <button
-          onClick={() => navigate("/user-home")}
-          style={{
-            padding: "10px 20px",
-            borderRadius: "12px",
-            border: "none",
-            backgroundColor: "#333",
-            color: "#fff",
-            fontWeight: "bold",
-            cursor: "pointer",
-            marginBottom: "10px",
-          }}
-        >
-          🔙 Back
-        </button>
-      </div>
-
-      {/* Message */}
-      {message && (
+      <div>
         <div
           style={{
-            marginBottom: "20px",
-            padding: "15px",
-            backgroundColor: "rgba(0,0,0,0.4)",
-            borderRadius: "15px",
-            textAlign: "center",
-            fontWeight: "bold",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginBottom: "30px",
           }}
         >
-          {message}
+          <h1
+            style={{
+              fontSize: "2.5rem",
+              fontWeight: "bold",
+              marginBottom: "15px",
+            }}
+          >
+            📋 My Bookings
+          </h1>
+          <button
+            onClick={() => navigate("/user-home")}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "12px",
+              border: "none",
+              backgroundColor: "#333",
+              color: "#fff",
+              fontWeight: "bold",
+              cursor: "pointer",
+              marginBottom: "10px",
+            }}
+          >
+            🔙 Back
+          </button>
         </div>
-      )}
 
-      {/* Booking Cards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "20px",
-        }}
-      >
-        {bookings.length === 0 ? (
-          <p style={{ fontSize: "1.2rem", fontWeight: "bold", textAlign: "center", gridColumn: "1 / -1" }}>
-            No bookings found.
-          </p>
-        ) : (
-          bookings.map((booking) => (
-            <div
-              key={booking._id}
+        {/* Message */}
+        {message && (
+          <div
+            style={{
+              marginBottom: "20px",
+              padding: "15px",
+              backgroundColor: "rgba(0,0,0,0.4)",
+              borderRadius: "15px",
+              textAlign: "center",
+              fontWeight: "bold",
+            }}
+          >
+            {message}
+          </div>
+        )}
+
+        {/* Booking Cards */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {bookings.length === 0 ? (
+            <p
               style={{
-                backgroundColor: "rgba(255,255,255,0.2)",
-                borderRadius: "20px",
-                padding: "20px",
-                position: "relative",
-                boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                color: "#fff",
+                fontSize: "1.2rem",
+                fontWeight: "bold",
+                textAlign: "center",
+                gridColumn: "1 / -1",
               }}
             >
-              {/* Top Gradient Bar */}
+              No bookings found.
+            </p>
+          ) : (
+            bookings.map((booking) => (
               <div
+                key={booking._id}
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "5px",
-                  borderTopLeftRadius: "20px",
-                  borderTopRightRadius: "20px",
-                  background: "linear-gradient(90deg, #4c6ef5, #845ef7, #f783ac)",
-                }}
-              ></div>
-
-              <div style={{ marginTop: "10px", lineHeight: "1.5" }}>
-                <h2 style={{ fontSize: "1.4rem", fontWeight: "bold", color: "#ffd700" }}>
-                  {booking.eventName}
-                </h2>
-                <p>
-                  <strong>Date:</strong> {booking.eventDate}
-                </p>
-                <p>
-                  <strong>Seat:</strong> {booking.seat || "General"}
-                </p>
-                <p>
-                  <strong>Price:</strong> ₹{booking.price}
-                </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  {booking.entered ? (
-                    <span style={{ color: "#00ff00", fontWeight: "bold" }}>✅ Entered</span>
-                  ) : (
-                    <span style={{ color: "#ffeb3b", fontWeight: "bold" }}>⌛ Not Entered</span>
-                  )}
-                </p>
-              </div>
-
-              <button
-                onClick={() => alert("Show detailed info logic here")}
-                style={{
-                  marginTop: "15px",
-                  padding: "10px",
-                  borderRadius: "12px",
-                  border: "none",
-                  backgroundColor: "#1e40af",
+                  backgroundColor: "rgba(255,255,255,0.2)",
+                  borderRadius: "20px",
+                  padding: "20px",
+                  position: "relative",
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
                   color: "#fff",
-                  fontWeight: "bold",
-                  cursor: "pointer",
                 }}
               >
-                🔍 View Details
-              </button>
-            </div>
-          ))
-        )}
+                {/* Top Gradient Bar */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "5px",
+                    borderTopLeftRadius: "20px",
+                    borderTopRightRadius: "20px",
+                    background:
+                      "linear-gradient(90deg, #4c6ef5, #845ef7, #f783ac)",
+                  }}
+                ></div>
+
+                <div style={{ marginTop: "10px", lineHeight: "1.5" }}>
+                  <h2
+                    style={{
+                      fontSize: "1.4rem",
+                      fontWeight: "bold",
+                      color: "#ffd700",
+                    }}
+                  >
+                    {booking.eventName}
+                  </h2>
+                  <p>
+                    <strong>Date:</strong> {booking.eventDate}
+                  </p>
+                  <p>
+                    <strong>Seat:</strong> {booking.seat || "General"}
+                  </p>
+                  <p>
+                    <strong>Price:</strong> ₹{booking.price}
+                  </p>
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    {booking.entered ? (
+                      <span style={{ color: "#00ff00", fontWeight: "bold" }}>
+                        ✅ Entered
+                      </span>
+                    ) : (
+                      <span style={{ color: "#ffeb3b", fontWeight: "bold" }}>
+                        ⌛ Not Entered
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => alert("Show detailed info logic here")}
+                  style={{
+                    marginTop: "15px",
+                    padding: "10px",
+                    borderRadius: "12px",
+                    border: "none",
+                    backgroundColor: "#1e40af",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                >
+                  🔍 View Details
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* ✅ Contact Info Always Displayed */}
+      <div
+        style={{
+          marginTop: "40px",
+          padding: "20px",
+          backgroundColor: "rgba(0,0,0,0.6)",
+          borderRadius: "15px",
+          textAlign: "center",
+        }}
+      >
+        <p style={{ marginBottom: "10px", fontWeight: "bold" }}>
+          📩 Your ticket will also be sent to your Email / WhatsApp.
+        </p>
+        <p>
+          For any queries, contact: <br />
+          📞 Aayan Shaikh: <strong>+91 8104216280</strong> <br />
+          📞 Krish Dubey: <strong>+91 9152808144</strong> <br />
+          📞 Vineet Sharma: <strong>+91 8657357781</strong>
+        </p>
       </div>
     </div>
   );

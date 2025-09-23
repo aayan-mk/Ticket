@@ -13,7 +13,7 @@ const Home = () => {
       name: "Garba Night",
       date: "26th September 2025",
       location: "Shree L. R. Tiwari Educational Campus, Mira Road",
-      price: "150 + GST",
+      price: "150 + Additional Charges",
       description:
         "A night full of traditional Garba dance and music. Join the fun!",
       image: GarbaImage,
