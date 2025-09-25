@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
-
+import { jwtDecode } from "jwt-decode"; // ✅ Correct ESM import for Vite
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +10,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Handle normal login
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -44,8 +44,9 @@ const Login = () => {
     }
   };
 
+  // Handle Google OAuth login
   const handleGoogleSuccess = (credentialResponse) => {
-    const decoded = jwtDecode(credentialResponse.credential);
+    const decoded = jwtDecode(credentialResponse.credential); // ✅ works fine
     const email = decoded.email;
     const name = decoded.name;
     const picture = decoded.picture;

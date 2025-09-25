@@ -200,7 +200,7 @@ const MyBooking = () => {
         }}
       >
         <p style={{ marginBottom: "10px", fontWeight: "bold" }}>
-          📩 Your ticket will also be sent to your Email / WhatsApp.
+          📩 Your ticket will be sent to your Email / WhatsApp Soon.
         </p>
         <p>
           For any queries, contact: <br />

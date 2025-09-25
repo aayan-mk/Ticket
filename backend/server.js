@@ -1,27 +1,58 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const connectDB = require("./config/db");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const path = require("path");
+const connectDB = require("./config/db");
 
-// Load env vars
+// Routes
+const authRoutes = require("./routes/authRoutes");
+const eventRoutes = require("./routes/eventRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+
 dotenv.config();
-
-// Connect to MongoDB
 connectDB();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// ✅ CORS (allow frontend to talk to backend)
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
+// ✅ Cookie parser
+app.use(cookieParser());
+
+// ✅ Razorpay webhook needs RAW body
+app.use(
+  "/api/payment/webhook",
+  express.raw({ type: "application/json" })
+);
+
+// ✅ Normal JSON for all other routes
 app.use(express.json());
 
-// Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/events", require("./routes/eventRoutes"));
-app.use("/api/payments", require("./routes/paymentRoutes"));
-app.use(require("./routes/webhooksRoutes")); // Razorpay webhook
+// ✅ API Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/payment", paymentRoutes);
 
-// Start HTTP server (hosting provider will handle HTTPS)
+// ✅ Health check
+app.get("/api/health", (req, res) => {
+  res.send("✅ API is running...");
+});
+
+// ✅ Serve frontend in production
+if (process.env.NODE_ENV === "production") {
+  const frontendPath = path.join(__dirname, "../frontend/dist");
+  app.use(express.static(frontendPath));
+
+  // ✅ Always return index.html for React Router routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+}
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
