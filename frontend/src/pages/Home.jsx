@@ -2,9 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-// Import spotlight image
-import spotlightImage from "../components/spotlight.png"; // adjust path if needed
-
 const Home = () => {
   const navigate = useNavigate();
 
@@ -75,7 +72,7 @@ const Home = () => {
         }}
       >
         <img
-          src={spotlightImage}
+          src="/spotlight.png"
           alt="Spotlight Notice"
           style={{
             width: "100%",
