@@ -1,9 +1,9 @@
 const express = require("express");
-const { googleLogin, loginUser } = require("../controllers/authController");
+const { googleLogin } = require("../controllers/authController");
 
 const router = express.Router();
 
+// ✅ Google login route
 router.post("/google", googleLogin);
-router.post("/login", loginUser);
 
 module.exports = router;

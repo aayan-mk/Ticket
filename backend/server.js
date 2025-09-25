@@ -5,55 +5,56 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const connectDB = require("./config/db");
 
-// Routes
-const authRoutes = require("./routes/authRoutes");
-const eventRoutes = require("./routes/eventRoutes");
-const bookingRoutes = require("./routes/bookingRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
-
+// Load env
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// ✅ CORS (allow frontend to talk to backend)
-app.use(cors({ origin: "https://reculturals.netlify.app", credentials: true }));
-
-// ✅ Cookie parser
-app.use(cookieParser());
-
-// ✅ Razorpay webhook needs RAW body
+// ✅ 1. CORS should be FIRST
 app.use(
-  "/api/payment/webhook",
-  express.raw({ type: "application/json" })
+  cors({
+    origin: ["https://reculturals.netlify.app", "http://localhost:5173"], // allowed frontends
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
 );
 
-// ✅ Normal JSON for all other routes
+// ✅ 2. Handle preflight (OPTIONS) globally
+app.options("*", cors());
+
+// ✅ 3. Cookies
+app.use(cookieParser());
+
+// ✅ 4. JSON parsing (for most routes)
 app.use(express.json());
 
-// ✅ API Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/events", eventRoutes);
-app.use("/api/bookings", bookingRoutes);
-app.use("/api/payment", paymentRoutes);
+// ✅ 5. Routes
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/events", require("./routes/eventRoutes"));
+app.use("/api/bookings", require("./routes/bookingRoutes"));
+
+// ✅ 6. Razorpay webhook (must use raw body & ONLY for this route)
+app.post(
+  "/api/payment/webhook",
+  express.raw({ type: "application/json" }),
+  require("./routes/paymentWebhookRoute") // 👉 move logic into a separate controller/route
+);
 
 // ✅ Health check
-app.get("/api/health", (req, res) => {
-  res.send("✅ API is running...");
-});
+app.get("/api/health", (req, res) => res.send("✅ API is running..."));
 
 // ✅ Serve frontend in production
 if (process.env.NODE_ENV === "production") {
   const frontendPath = path.join(__dirname, "../frontend/dist");
   app.use(express.static(frontendPath));
 
-  // ✅ Always return index.html for React Router routes
   app.get("*", (req, res) => {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+);

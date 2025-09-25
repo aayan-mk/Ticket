@@ -1,3 +1,4 @@
+// controllers/paymentController.js
 const crypto = require("crypto");
 const Booking = require("../models/Booking");
 
@@ -10,28 +11,25 @@ exports.razorpayWebhook = async (req, res) => {
     const digest = shasum.digest("hex");
 
     if (digest !== req.headers["x-razorpay-signature"]) {
-      return res.status(400).json({ success: false, message: "Invalid signature" });
+      return res.status(400).json({ message: "Invalid signature" });
     }
 
-    const event = req.body.event;
+    const payload = req.body.payload.payment.entity;
 
-    if (event === "payment.captured" || event === "order.paid") {
-      const payment = req.body.payload.payment.entity;
+    // Save booking in DB
+    const booking = await Booking.create({
+      user: req.body.notes.userId, // 👈 send userId as metadata when creating Razorpay order
+      event: req.body.notes.eventId,
+      seats: req.body.notes.seats || 1,
+      price: payload.amount / 100,
+      paid: true,
+      razorpayOrderId: payload.order_id,
+      razorpayPaymentId: payload.id,
+    });
 
-      const booking = await Booking.findOne({ razorpayOrderId: payment.order_id });
-
-      if (booking) {
-        booking.paid = true;
-        booking.razorpayPaymentId = payment.id;
-        booking.razorpaySignature = req.headers["x-razorpay-signature"];
-        await booking.save();
-        console.log("✅ Booking updated as paid:", booking._id);
-      }
-    }
-
-    res.json({ success: true });
+    res.json({ success: true, booking });
   } catch (err) {
-    console.error("❌ Webhook Error:", err.message);
-    res.status(500).json({ success: false, error: err.message });
+    console.error("Webhook error:", err);
+    res.status(500).json({ message: "Webhook processing failed" });
   }
 };

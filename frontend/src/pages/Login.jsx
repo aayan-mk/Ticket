@@ -2,79 +2,77 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode"; // ✅ Correct ESM import for Vite
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Handle normal login
+  // 🚀 Normal login (demo only)
   const handleLogin = (e) => {
     e.preventDefault();
 
     let userData = null;
-    let isStaff = false;
-    let isAdmin = false;
+    let role = "user";
 
     if (email === "user@example.com" && password === "user123") {
-      userData = { name: "Demo User", email };
+      userData = { name: "Demo User", email, role: "user" };
       Cookies.set("user", JSON.stringify(userData), { expires: 1 });
     } else if (email === "staff@example.com" && password === "staff123") {
-      userData = { name: "Demo Staff", email };
-      isStaff = true;
+      userData = { name: "Demo Staff", email, role: "staff" };
       Cookies.set("staff", JSON.stringify(userData), { expires: 1 });
+      role = "staff";
     } else if (email === "admin@example.com" && password === "admin123") {
-      userData = { name: "Demo Admin", email };
-      isAdmin = true;
+      userData = { name: "Demo Admin", email, role: "admin" };
       Cookies.set("admin", JSON.stringify(userData), { expires: 1 });
+      role = "admin";
     } else {
       alert("Invalid credentials!");
       return;
     }
 
-    if (isAdmin) {
-      navigate("/admin-home");
-    } else if (isStaff) {
-      navigate("/verify-ticket");
-    } else {
-      const redirectTo = location.state?.from || "/user-home";
-      navigate(redirectTo);
-    }
+    // Navigate based on role
+    if (role === "admin") navigate("/admin-home");
+    else if (role === "staff") navigate("/verify-ticket");
+    else navigate(location.state?.from || "/user-home");
   };
 
-  // Handle Google OAuth login
-  const handleGoogleSuccess = (credentialResponse) => {
-    const decoded = jwtDecode(credentialResponse.credential); // ✅ works fine
-    const email = decoded.email;
-    const name = decoded.name;
-    const picture = decoded.picture;
+  // ✅ Google OAuth login (calls backend)
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      const decoded = jwtDecode(credentialResponse.credential);
 
-    let userData = { name, email, picture };
-    let isStaff = false;
-    let isAdmin = false;
+      const res = await fetch("http://localhost:5001/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // allow cookies
+        body: JSON.stringify({
+          googleId: decoded.sub,
+          name: decoded.name,
+          email: decoded.email,
+  }),
+});
 
-    if (email === "staff@example.com") {
-      userData.role = "staff";
-      isStaff = true;
-      Cookies.set("staff", JSON.stringify(userData), { expires: 1 });
-    } else if (email === "admin@example.com") {
-      userData.role = "admin";
-      isAdmin = true;
-      Cookies.set("admin", JSON.stringify(userData), { expires: 1 });
-    } else {
-      userData.role = "user";
-      Cookies.set("user", JSON.stringify(userData), { expires: 1 });
-    }
 
-    if (isAdmin) {
-      navigate("/admin-home");
-    } else if (isStaff) {
-      navigate("/verify-ticket");
-    } else {
-      const redirectTo = location.state?.from || "/user-home";
-      navigate(redirectTo);
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const data = await res.json();
+
+      // Save user in cookie (fallback if cookie not set by backend)
+      Cookies.set("user", JSON.stringify(data.user), { expires: 1 });
+
+      // Redirect based on role
+      if (data.user.role === "admin") navigate("/admin-home");
+      else if (data.user.role === "staff") navigate("/verify-ticket");
+      else navigate(location.state?.from || "/user-home");
+    } catch (err) {
+      console.error("Google login failed:", err);
+      alert("Google login failed. Try again!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,6 +102,8 @@ const Login = () => {
         }}
       >
         <h1 style={{ marginBottom: "25px", color: "#333" }}>Login</h1>
+
+        {/* Email/Password Login */}
         <form onSubmit={handleLogin}>
           <input
             type="email"
@@ -118,7 +118,6 @@ const Login = () => {
               borderRadius: "12px",
               border: "1px solid #ccc",
               fontSize: "14px",
-              outline: "none",
             }}
           />
           <input
@@ -134,7 +133,6 @@ const Login = () => {
               borderRadius: "12px",
               border: "1px solid #ccc",
               fontSize: "14px",
-              outline: "none",
             }}
           />
           <button
@@ -150,7 +148,6 @@ const Login = () => {
               color: "white",
               background: "linear-gradient(90deg, #ff8a00, #e52e71)",
               cursor: "pointer",
-              transition: "all 0.3s ease",
             }}
           >
             🚀 Login Now
@@ -163,23 +160,8 @@ const Login = () => {
             onSuccess={handleGoogleSuccess}
             onError={handleGoogleError}
           />
+          {loading && <p style={{ marginTop: "10px" }}>Signing in...</p>}
         </div>
-
-        {/* Register Option */}
-        <p style={{ marginTop: "20px", fontSize: "14px", color: "#555" }}>
-          Don’t have an account?{" "}
-          <span
-            onClick={() => navigate("/register")}
-            style={{
-              color: "#2575fc",
-              fontWeight: "bold",
-              cursor: "pointer",
-              textDecoration: "underline",
-            }}
-          >
-            Register here
-          </span>
-        </p>
       </div>
     </div>
   );

@@ -2,11 +2,10 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    googleId: String,
+    googleId: { type: String, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String },
-    role: { type: String, enum: ["user", "staff", "admin"], default: "user" },
+    role: { type: String, default: "user" }, // user / staff / admin
   },
   { timestamps: true }
 );
