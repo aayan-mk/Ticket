@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-
-
 const UserHome = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -71,7 +69,7 @@ const UserHome = () => {
         }}
       >
         <img
-          src={<img src="/spotlight.png" alt="Spotlight Notice" />}
+          src="/spotlight.png"
           alt="Spotlight Notice"
           style={{
             width: "100%",
