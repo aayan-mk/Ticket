@@ -17,7 +17,7 @@ connectDB();
 const app = express();
 
 // ✅ CORS (allow frontend to talk to backend)
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "https://reculturals.netlify.app", credentials: true }));
 
 // ✅ Cookie parser
 app.use(cookieParser());
